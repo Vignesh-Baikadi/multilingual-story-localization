@@ -17,6 +17,8 @@ from app.schemas.story import StoryCreate
 from app.schemas.story import StoryResponse
 from app.schemas.story import StoryPreviewResponse
 from app.services.story_service import StoryService
+from app.schemas.analysis import ( StoryAnalysisResponse,)
+from app.services.story_analysis_service import (StoryAnalysisService,)
 
 router = APIRouter(
     prefix="/stories",
@@ -93,6 +95,30 @@ def preview_story(
         "title": story.title,
         "preview": story.original_text[:1000]
     }
+
+
+@router.get(
+    "/{story_id}/analysis",
+    response_model=StoryAnalysisResponse
+)
+def analyze_story(
+    story_id: int,
+    db: Session = Depends(get_db)
+):
+    story = StoryService.get_story(
+        db,
+        story_id
+    )
+
+    if not story:
+        raise HTTPException(
+            status_code=404,
+            detail="Story not found"
+        )
+
+    return StoryAnalysisService.analyze(
+        story.original_text
+    )
 
 @router.post("/upload")
 async def upload_story(
