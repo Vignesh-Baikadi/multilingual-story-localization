@@ -19,3 +19,11 @@ export const uploadStory = async (file: File) => {
 
   return response.data;
 };
+
+export const getStories = async () => {
+  const response = await axios.get(
+    `${API_BASE_URL}/stories`
+  );
+
+  return response.data;
+};
