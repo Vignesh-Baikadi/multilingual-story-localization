@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 
-class StoryAnalysisResponse(BaseModel):
-    
-    word_count: int
-    character_count: int
+
+class AIAnalysisResponse(
+    BaseModel
+):
     characters: list[str]
     locations: list[str]
     themes: list[str]

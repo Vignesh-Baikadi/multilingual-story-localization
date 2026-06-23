@@ -1,4 +1,9 @@
 import os
+import json
+
+
+from app.services.gemini_service import (GeminiService)
+from app.schemas.ai_analysis import (AIAnalysisResponse)
 
 
 from fastapi import UploadFile
@@ -19,6 +24,9 @@ from app.schemas.story import StoryPreviewResponse
 from app.services.story_service import StoryService
 from app.schemas.analysis import ( StoryAnalysisResponse,)
 from app.services.story_analysis_service import (StoryAnalysisService,)
+from app.prompts.analysis_prompt import (ANALYSIS_PROMPT)
+
+
 
 router = APIRouter(
     prefix="/stories",
@@ -50,6 +58,7 @@ def get_all_stories(
     return StoryService.get_all_stories(db)
 
 
+#
 @router.get(
     "/{story_id}",
     response_model=StoryResponse
@@ -71,6 +80,8 @@ def get_story(
 
     return story
 
+
+# Preview of the story
 @router.get(
     "/{story_id}/preview",
     response_model=StoryPreviewResponse
@@ -97,6 +108,7 @@ def preview_story(
     }
 
 
+# Local analysis
 @router.get(
     "/{story_id}/analysis",
     response_model=StoryAnalysisResponse
@@ -119,6 +131,48 @@ def analyze_story(
     return StoryAnalysisService.analyze(
         story.original_text
     )
+
+# Analysis By Gemini
+@router.get(
+    "/{story_id}/ai-analysis",
+    response_model=AIAnalysisResponse
+)
+def ai_analysis(
+    story_id: int,
+    db: Session = Depends(get_db)
+):
+    story = StoryService.get_story(
+        db,
+        story_id
+    )
+
+    if not story:
+        raise HTTPException(
+            status_code=404,
+            detail="Story not found"
+        )
+
+    prompt = ANALYSIS_PROMPT.format(
+        story=story.original_text
+    )
+
+    response = (
+        GeminiService.generate(
+            prompt
+        )
+    )
+
+    cleaned = (
+        response
+        .replace("```json", "")
+        .replace("```", "")
+        .strip()
+    )
+
+    return json.loads(
+        cleaned
+    )
+
 
 @router.post("/upload")
 async def upload_story(
