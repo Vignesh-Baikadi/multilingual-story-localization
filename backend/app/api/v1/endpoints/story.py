@@ -25,8 +25,8 @@ from app.services.story_service import StoryService
 from app.schemas.analysis import ( StoryAnalysisResponse,)
 from app.services.story_analysis_service import (StoryAnalysisService,)
 from app.prompts.analysis_prompt import (ANALYSIS_PROMPT)
-
-
+from app.services.localization_service import (LocalizationService)
+from app.services.localization_storage_service import (LocalizationStorageService)
 
 router = APIRouter(
     prefix="/stories",
@@ -174,6 +174,61 @@ def ai_analysis(
     )
 
 
+#Localize
+@router.get(
+    "/{story_id}/localize/{language}"
+)
+def localize_story(
+    story_id: int,
+    language: str,
+    db: Session = Depends(get_db)
+):
+    story = StoryService.get_story(
+        db,
+        story_id
+    )
+
+    if not story:
+        raise HTTPException(
+            status_code=404,
+            detail="Story not found"
+        )
+
+    existing = (
+        LocalizationStorageService
+        .get_localization(
+            db,
+            story_id,
+            language
+        )
+    )
+
+    if existing:
+        return {
+            "language": language,
+            "localized_story":
+                existing.localized_text
+        }
+    localized_story = (
+        LocalizationService.localize(
+            story.original_text,
+            language
+        )
+    )
+    LocalizationStorageService.create_localization(
+        db,
+        story_id,
+        language,
+        localized_story
+    )
+
+    return {
+        "language": language,
+        "localized_story": localized_story
+    }
+
+
+# Upload of txt and pdf files
 @router.post("/upload")
 async def upload_story(
     file: UploadFile = File(...),
