@@ -7,3 +7,5 @@ class StoryAnalysisResponse(
     word_count: int
     character_count: int
     characters: list[str]
+    themes: list[str]
+    genre: str

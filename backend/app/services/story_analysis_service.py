@@ -1,5 +1,8 @@
 import re
 
+from app.services.theme_detection_service import (ThemeDetectionService)
+from app.services.genre_detection_service import (GenreDetectionService)
+
 class StoryAnalysisService:
 
     @staticmethod
@@ -23,4 +26,6 @@ class StoryAnalysisService:
             "word_count": len(words),
             "character_count": len(text),
             "characters": characters[:20],
+            "themes": ThemeDetectionService.detect(text),
+            "genre": GenreDetectionService.detect(text),
         }
