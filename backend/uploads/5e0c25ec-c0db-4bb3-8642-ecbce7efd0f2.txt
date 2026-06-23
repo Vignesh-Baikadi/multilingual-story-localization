@@ -1,0 +1,1028 @@
+# Day 3 - MongoDB Integration, Authentication System & JWT Authorization
+
+## Date
+
+2026-06-11
+
+---
+
+# Objectives Completed
+
+Today's goal was to move beyond a basic Express server and build a real authentication backend connected to MongoDB Atlas.
+
+By the end of the session, the application successfully:
+
+* Connected to MongoDB Atlas
+* Created and stored users in MongoDB
+* Implemented MVC architecture
+* Built registration functionality
+* Added password hashing using bcrypt
+* Implemented login functionality
+* Generated JWT tokens
+* Built protected routes using authentication middleware
+* Verified all functionality using Thunder Client and MongoDB Compass
+
+This marks the completion of the first fully functional backend authentication flow.
+
+---
+
+# Backend Architecture Refactor
+
+## Why Architecture Matters
+
+Initially, routes and logic were handled directly inside `server.js`.
+
+While this works for small applications, it becomes difficult to maintain as the application grows.
+
+To follow industry practices, the backend was reorganized using MVC architecture.
+
+---
+
+## MVC Architecture
+
+### Concept
+
+MVC stands for:
+
+```text
+Model
+View
+Controller
+```
+
+In backend development:
+
+```text
+Route
+  ↓
+Controller
+  ↓
+Model
+  ↓
+Database
+```
+
+---
+
+### Project Flow
+
+```text
+Client Request
+      ↓
+Route
+      ↓
+Controller
+      ↓
+Model
+      ↓
+MongoDB
+      ↓
+Response
+```
+
+---
+
+## Backend Folder Structure Created
+
+```text
+server/
+
+├── config/
+│   └── db.js
+│
+├── controllers/
+│   └── authController.js
+│
+├── middleware/
+│   └── authMiddleware.js
+│
+├── models/
+│   └── User.js
+│
+├── routes/
+│   └── authRoutes.js
+│
+├── utils/
+│
+├── .env
+├── server.js
+└── package.json
+```
+
+Purpose of each folder:
+
+### config
+
+Contains configuration files.
+
+Example:
+
+```text
+db.js
+```
+
+Responsible for database connection.
+
+---
+
+### controllers
+
+Contains application logic.
+
+Example:
+
+```text
+registerUser()
+loginUser()
+```
+
+---
+
+### models
+
+Contains database schemas and models.
+
+Example:
+
+```text
+User.js
+```
+
+---
+
+### routes
+
+Maps incoming requests to controllers.
+
+Example:
+
+```text
+POST /api/auth/register
+```
+
+---
+
+### middleware
+
+Executes before route handlers.
+
+Used for:
+
+* Authentication
+* Authorization
+* Validation
+* Logging
+
+---
+
+# MongoDB Atlas Setup
+
+## Atlas Project Created
+
+Project Name:
+
+```text
+VChat
+```
+
+---
+
+## Cluster Created
+
+Selected:
+
+```text
+M0 Free Tier
+```
+
+Purpose:
+
+Provides a free cloud-hosted MongoDB database.
+
+---
+
+## Database User
+
+Created database access credentials.
+
+Purpose:
+
+Allows the application to authenticate with MongoDB Atlas.
+
+---
+
+## Network Access Configuration
+
+Added:
+
+```text
+0.0.0.0/0
+```
+
+Purpose:
+
+Allows development connections from any IP address.
+
+---
+
+# Mongoose Integration
+
+## Package Installed
+
+SERVER SIDE
+
+```bash
+npm install mongoose
+```
+
+---
+
+## Why Mongoose?
+
+Mongoose acts as a bridge between:
+
+```text
+Node.js
+    ↔
+MongoDB
+```
+
+Benefits:
+
+* Schema validation
+* Query helpers
+* Model abstraction
+* Cleaner database code
+
+---
+
+# Database Connection
+
+Created:
+
+```text
+config/db.js
+```
+
+Responsibilities:
+
+* Connect to MongoDB Atlas
+* Handle connection errors
+* Start application only when database is available
+
+---
+
+## Environment Variables
+
+Created:
+
+```text
+.env
+```
+
+Stored:
+
+```env
+PORT=5000
+MONGO_URI=...
+```
+
+Purpose:
+
+Keep sensitive information outside source code.
+
+---
+
+# User Model Creation
+
+Created:
+
+```text
+models/User.js
+```
+
+---
+
+## User Schema
+
+Fields:
+
+```js
+username
+email
+password
+```
+
+---
+
+## Mongoose Features Used
+
+### required
+
+```js
+required: true
+```
+
+Field must be provided.
+
+---
+
+### unique
+
+```js
+unique: true
+```
+
+Email must be unique.
+
+---
+
+### timestamps
+
+```js
+timestamps: true
+```
+
+Automatically creates:
+
+```js
+createdAt
+updatedAt
+```
+
+---
+
+# Registration System
+
+## Controller Created
+
+File:
+
+```text
+controllers/authController.js
+```
+
+Function:
+
+```js
+registerUser()
+```
+
+---
+
+## Initial Flow
+
+```text
+Receive Request
+      ↓
+Create User
+      ↓
+Store In Database
+      ↓
+Return Response
+```
+
+---
+
+## Registration Endpoint
+
+```http
+POST /api/auth/register
+```
+
+Tested successfully using Thunder Client.
+
+---
+
+# Password Security
+
+## Package Installed
+
+SERVER SIDE
+
+```bash
+npm install bcryptjs
+```
+
+---
+
+# Password Hashing
+
+## Problem
+
+Initially:
+
+```json
+{
+  "password": "Password123"
+}
+```
+
+Passwords were stored in plain text.
+
+This is a major security risk.
+
+---
+
+## Solution
+
+Used:
+
+```js
+bcrypt.hash(password, 10)
+```
+
+Before saving.
+
+---
+
+## New Flow
+
+```text
+Password
+     ↓
+Hash
+     ↓
+Store Hash
+```
+
+Result:
+
+```json
+{
+  "password": "$2b$10$..."
+}
+```
+
+---
+
+## Email Validation
+
+Implemented:
+
+```js
+User.findOne({ email })
+```
+
+Purpose:
+
+Prevent duplicate accounts.
+
+---
+
+## Registration Security Flow
+
+```text
+Receive Data
+      ↓
+Check Existing Email
+      ↓
+Hash Password
+      ↓
+Save User
+      ↓
+Return Success
+```
+
+---
+
+# Login System
+
+## Login Controller Created
+
+Function:
+
+```js
+loginUser()
+```
+
+---
+
+## Login Flow
+
+```text
+Receive Credentials
+      ↓
+Find User
+      ↓
+Compare Password
+      ↓
+Return Success/Fail
+```
+
+---
+
+## Password Verification
+
+Used:
+
+```js
+bcrypt.compare()
+```
+
+Purpose:
+
+Compare entered password against stored hash.
+
+---
+
+## Login Endpoint
+
+```http
+POST /api/auth/login
+```
+
+---
+
+## Tested Cases
+
+### Valid Email + Password
+
+Result:
+
+```text
+Login Successful
+```
+
+---
+
+### Invalid Password
+
+Result:
+
+```text
+Invalid Credentials
+```
+
+---
+
+### Invalid Email
+
+Result:
+
+```text
+Invalid Credentials
+```
+
+---
+
+# JWT Authentication
+
+## Package Installed
+
+SERVER SIDE
+
+```bash
+npm install jsonwebtoken
+```
+
+---
+
+# JWT Secret
+
+Added to:
+
+```env
+JWT_SECRET=mySuperSecretKey123
+```
+
+Purpose:
+
+Sign and verify tokens.
+
+---
+
+# JWT Generation
+
+Implemented inside:
+
+```js
+loginUser()
+```
+
+Using:
+
+```js
+jwt.sign()
+```
+
+---
+
+## JWT Payload
+
+Stored:
+
+```js
+{
+  userId: user._id
+}
+```
+
+---
+
+## Expiration
+
+```js
+expiresIn: "7d"
+```
+
+Meaning:
+
+Token remains valid for seven days.
+
+---
+
+## Login Flow Updated
+
+```text
+Verify Password
+      ↓
+Generate JWT
+      ↓
+Send JWT
+      ↓
+Client Stores Token
+```
+
+---
+
+# Authentication Middleware
+
+Created:
+
+```text
+middleware/authMiddleware.js
+```
+
+Purpose:
+
+Protect private routes.
+
+---
+
+# JWT Verification
+
+Implemented:
+
+```js
+jwt.verify()
+```
+
+Flow:
+
+```text
+Request
+    ↓
+Verify Token
+    ↓
+Allow / Deny
+```
+
+---
+
+# Protected Routes
+
+Created:
+
+```http
+GET /api/auth/profile
+```
+
+---
+
+## Route Protection
+
+```js
+router.get("/profile", protect, getProfile)
+```
+
+Execution Flow:
+
+```text
+Request
+   ↓
+protect()
+   ↓
+getProfile()
+```
+
+---
+
+# Testing Authorization
+
+## Without Token
+
+Result:
+
+```json
+{
+  "success": false,
+  "message": "Not authorized"
+}
+```
+
+---
+
+## With Token
+
+Result:
+
+```json
+{
+  "success": true
+}
+```
+
+Protected route worked successfully.
+
+---
+
+# Middleware Improvement
+
+Updated middleware to:
+
+```js
+req.user = await User.findById(decoded.userId)
+  .select("-password");
+```
+
+Purpose:
+
+Attach full user data instead of only userId.
+
+---
+
+## Why This Matters
+
+Future features will require:
+
+```js
+req.user
+```
+
+Examples:
+
+* Chats
+* Messages
+* Groups
+* User Search
+* Profile Updates
+
+---
+
+# MongoDB Compass Usage
+
+Connected Compass to MongoDB Atlas.
+
+Used Compass to verify:
+
+* User creation
+* Password hashing
+* Database structure
+* Stored documents
+
+This provided visual confirmation that APIs were working correctly.
+
+---
+
+# Concepts Learned Today
+
+## Backend Concepts
+
+* MVC Architecture
+* Controllers
+* Routes
+* Models
+* Middleware
+* Environment Variables
+
+---
+
+## Database Concepts
+
+* MongoDB Atlas
+* Collections
+* Documents
+* Mongoose
+* Schemas
+* Models
+
+---
+
+## Authentication Concepts
+
+* Password Hashing
+* bcrypt
+* JWT
+* Token Generation
+* Token Verification
+* Protected Routes
+
+---
+
+## JavaScript Concepts
+
+### async
+
+Allows asynchronous operations.
+
+---
+
+### await
+
+Waits for asynchronous operations to complete.
+
+---
+
+### try/catch
+
+Handles runtime errors safely.
+
+---
+
+### next()
+
+Moves execution to the next middleware.
+
+---
+
+# Debugging Experience
+
+## MongoDB Connection Error
+
+Error:
+
+```text
+mongodb+srv URI cannot have port number
+```
+
+Root Cause:
+
+Incorrect Atlas connection string.
+
+Resolution:
+
+Used the exact Atlas driver connection string.
+
+---
+
+## Package Configuration Conflict
+
+Issue:
+
+```json
+"type": "module"
+"type": "commonjs"
+```
+
+Both existed simultaneously.
+
+Resolution:
+
+Removed duplicate entry and retained:
+
+```json
+"type": "commonjs"
+```
+
+---
+
+# Current Backend Capabilities
+
+Working Features:
+
+✅ Register User
+
+✅ Prevent Duplicate Emails
+
+✅ Hash Passwords
+
+✅ Login User
+
+✅ Generate JWT
+
+✅ Verify JWT
+
+✅ Protected Route Access
+
+✅ MongoDB Persistence
+
+✅ Compass Verification
+
+---
+
+# Current Project Progress
+
+Estimated Progress:
+
+```text
+35%
+```
+
+---
+
+# Current Tech Stack
+
+Frontend:
+
+* React
+* Vite
+* Tailwind CSS v4
+* React Router
+* Axios
+
+Backend:
+
+* Node.js
+* Express.js
+* dotenv
+* cors
+* bcryptjs
+* jsonwebtoken
+
+Database:
+
+* MongoDB Atlas
+* Mongoose
+
+Tools:
+
+* Git
+* GitHub
+* Thunder Client
+* MongoDB Compass
+
+---
+
+# Next Session Goals
+
+## Authentication Completion
+
+* Logout API
+* Cookie-based Authentication
+* HTTP-Only Cookies
+* Secure Authentication Flow
+
+---
+
+## Frontend Integration
+
+Connect:
+
+```text
+Register.jsx
+```
+
+to backend API.
+
+Connect:
+
+```text
+Login.jsx
+```
+
+to backend API.
+
+Use:
+
+```text
+Axios
+```
+
+for communication.
+
+---
+
+## First Full Stack Flow
+
+Target Flow:
+
+```text
+React Form
+      ↓
+Axios Request
+      ↓
+Express API
+      ↓
+MongoDB
+      ↓
+Response
+      ↓
+React UI Update
+```
+
+This will be the first true frontend-to-backend integration of the VChat application.
+
+---
+
+# Mentor Notes / Project Preferences (Remembered For Future Sessions)
+
+Development preferences established today:
+
+* Explain important keywords when first introduced.
+* Avoid repeating the same explanation back-to-back.
+* Add comments only for meaningful logic and concepts.
+* Do not comment obvious lines such as imports, exports, or simple boilerplate.
+* Always mention whether a package should be installed in `client/` or `server/`.
+* Prioritize understanding before implementation.
+* Generate PROJECT_CONTEXT.md summaries only when explicitly requested or at the end of a major session.

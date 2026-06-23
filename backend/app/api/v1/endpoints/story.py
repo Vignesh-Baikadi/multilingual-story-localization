@@ -1,0 +1,166 @@
+import os
+
+
+from fastapi import UploadFile
+from fastapi import File
+from fastapi import APIRouter
+from fastapi import Depends
+from fastapi import HTTPException
+
+from sqlalchemy.orm import Session
+from app.core.logger import logger
+from app.utils.pdf_parser import extract_text_from_pdf
+from app.utils.txt_parser import extract_text_from_txt
+from app.utils.file_utils import generate_unique_filename
+from app.db.database import get_db
+from app.schemas.story import StoryCreate
+from app.schemas.story import StoryResponse
+from app.schemas.story import StoryPreviewResponse
+from app.services.story_service import StoryService
+
+router = APIRouter(
+    prefix="/stories",
+    tags=["Stories"]
+)
+
+
+@router.post(
+    "/",
+    response_model=StoryResponse
+)
+def create_story(
+    story: StoryCreate,
+    db: Session = Depends(get_db)
+):
+    return StoryService.create_story(
+        db,
+        story
+    )
+
+
+@router.get(
+    "/",
+    response_model=list[StoryResponse]
+)
+def get_all_stories(
+    db: Session = Depends(get_db)
+):
+    return StoryService.get_all_stories(db)
+
+
+@router.get(
+    "/{story_id}",
+    response_model=StoryResponse
+)
+def get_story(
+    story_id: int,
+    db: Session = Depends(get_db)
+):
+    story = StoryService.get_story(
+        db,
+        story_id
+    )
+
+    if not story:
+        raise HTTPException(
+            status_code=404,
+            detail="Story not found"
+        )
+
+    return story
+
+@router.get(
+    "/{story_id}/preview",
+    response_model=StoryPreviewResponse
+)
+def preview_story(
+    story_id: int,
+    db: Session = Depends(get_db)
+):
+    story = StoryService.get_story(
+        db,
+        story_id
+    )
+
+    if not story:
+        raise HTTPException(
+            status_code=404,
+            detail="Story not found"
+        )
+
+    return {
+        "id": story.id,
+        "title": story.title,
+        "preview": story.original_text[:1000]
+    }
+
+@router.post("/upload")
+async def upload_story(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    """
+    Upload PDF or TXT story.
+    """
+
+    allowed_extensions = [
+        ".pdf",
+        ".txt"
+    ]
+
+    extension = os.path.splitext(
+        file.filename
+    )[1].lower()
+
+    MAX_FILE_SIZE = 10 * 1024 * 1024
+
+    if extension not in allowed_extensions:
+        raise HTTPException(
+            status_code=400,
+            detail="Only PDF and TXT files allowed"
+        )
+
+    unique_filename = generate_unique_filename(
+        file.filename
+    )
+    upload_path = f"uploads/{unique_filename}"
+
+    contents = await file.read()
+
+    if len(contents) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=400,
+            detail="File exceeds 10MB limit"
+        )
+
+    with open(
+        upload_path,
+        "wb"
+    ) as buffer:
+        buffer.write(contents)
+
+    if extension == ".pdf":
+        extracted_text = extract_text_from_pdf(
+            upload_path
+        )
+    else:
+        extracted_text = extract_text_from_txt(
+            upload_path
+        )
+
+    story = StoryService.create_uploaded_story(
+        db=db,
+        title=file.filename,
+        text=extracted_text,
+        filename=unique_filename
+    )
+    logger.info(
+        f"Story uploaded successfully: {file.filename}"
+    )
+
+    return {
+        "id": story.id,
+        "filename": story.uploaded_file_name,
+        "text_length": len(extracted_text),
+        "preview": extracted_text[:500]
+    }
