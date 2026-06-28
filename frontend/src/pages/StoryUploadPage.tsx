@@ -3,7 +3,7 @@ import { useState } from "react";
 import StoryUploadForm from "../components/story/StoryUploadForm";
 import StoryPreview from "../components/story/StoryPreview";
 import LoadingSpinner from "../components/common/LoadingSpinner";
-import { uploadStory } from "../services/storyService";
+import storyService from "../services/storyService";
 
 const StoryUploadPage = () => {
   const [loading, setLoading] =
@@ -26,7 +26,7 @@ const StoryUploadPage = () => {
       setError("");
 
       const data =
-        await uploadStory(file);
+        await storyService.uploadStory(file);
 
       setTitle(data.filename);
       setPreview(data.preview);

@@ -1,47 +1,32 @@
-import { useEffect, useState } from "react";
-import { getStories } from "../services/storyService";
+import AppLayout from "../layout/AppLayout";
+import StoryCard from "./StoryCard";
+import { useStories } from "../../hooks/useStories";
 
-type Story = {
-  id: number;
-  title: string;
-};
+export default function StoryLibrary() {
+    const { stories, loading } = useStories();
 
-const StoryLibraryPage = () => {
-  const [stories, setStories] = useState<Story[]>([]);
+    return (
+        <AppLayout>
 
-  useEffect(() => {
-    const fetchStories = async () => {
-      try {
-        const data = await getStories();
-        setStories(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+            <h1 className="mb-8 text-3xl font-bold text-white">
+                Story Library
+            </h1>
 
-    fetchStories();
-  }, []);
+            {loading ? (
+                <p className="text-slate-400">
+                    Loading stories...
+                </p>
+            ) : (
+                <div className="space-y-5">
+                    {stories.map((story) => (
+                        <StoryCard
+                            key={story.id}
+                            story={story}
+                        />
+                    ))}
+                </div>
+            )}
 
-  return (
-    <div className="mx-auto max-w-5xl p-6">
-      <h1 className="mb-6 text-3xl font-bold">
-        Story Library
-      </h1>
-
-      <div className="grid gap-4">
-        {stories.map((story) => (
-          <div
-            key={story.id}
-            className="rounded-lg border p-4 shadow-sm"
-          >
-            <h2 className="font-semibold">
-              {story.title}
-            </h2>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export default StoryLibraryPage;
+        </AppLayout>
+    );
+}

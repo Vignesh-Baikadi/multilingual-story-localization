@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { getStories } from "../services/storyService";
+import StoryCard from "../components/story/StoryCard";
 
 type Story = {
   id: number;
   title: string;
+  uploaded_file_name: string;
+  created_at: string;
 };
 
 const StoryLibraryPage = () => {
@@ -28,17 +31,13 @@ const StoryLibraryPage = () => {
         Story Library
       </h1>
 
-      <div className="grid gap-4">
-        {stories.map((story) => (
-          <div
-            key={story.id}
-            className="rounded-lg border p-4 shadow-sm"
-          >
-            <h2 className="font-semibold">
-              {story.title}
-            </h2>
-          </div>
-        ))}
+      <div className="space-y-5">
+          {stories.map((story) => (
+              <StoryCard
+                  key={story.id}
+                  story={story}
+              />
+          ))}
       </div>
     </div>
   );

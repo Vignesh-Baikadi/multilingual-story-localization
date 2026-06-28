@@ -1,0 +1,35 @@
+/* ============================================
+   Global Design System
+   Used throughout the application.
+============================================ */
+
+:root {
+
+    /* Backgrounds */
+
+    --background: #030712;
+    --surface: #0F172A;
+
+    /* Glass */
+
+    --glass: rgba(255,255,255,.06);
+    --glass-border: rgba(255,255,255,.12);
+
+    /* Colors */
+
+    --primary: #6366F1;
+    --secondary: #8B5CF6;
+
+    --success: #22C55E;
+    --danger: #EF4444;
+
+    /* Text */
+
+    --text: #F8FAFC;
+    --text-secondary: #94A3B8;
+
+    /* Radius */
+
+    --radius:20px;
+
+}
