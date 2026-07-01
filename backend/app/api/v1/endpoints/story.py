@@ -1,11 +1,6 @@
 import os
 import json
 
-
-from app.services.gemini_service import (GeminiService)
-from app.schemas.ai_analysis import (AIAnalysisResponse)
-
-
 from fastapi import UploadFile
 from fastapi import File
 from fastapi import APIRouter
@@ -27,6 +22,9 @@ from app.services.story_analysis_service import (StoryAnalysisService,)
 from app.prompts.analysis_prompt import (ANALYSIS_PROMPT)
 from app.services.localization_service import (LocalizationService)
 from app.services.localization_storage_service import (LocalizationStorageService)
+from app.services.ai_analysis_service import AIAnalysisService
+from app.schemas.ai_analysis import AIAnalysisResponse
+
 
 router = APIRouter(
     prefix="/stories",
@@ -133,46 +131,40 @@ def analyze_story(
     )
 
 # Analysis By Gemini
-@router.get(
+@router.post(
     "/{story_id}/ai-analysis",
     response_model=AIAnalysisResponse
 )
-def ai_analysis(
+def generate_ai_analysis(
     story_id: int,
     db: Session = Depends(get_db)
 ):
-    story = StoryService.get_story(
+    analysis = AIAnalysisService.generate(
         db,
         story_id
     )
 
-    if not story:
+    if not analysis:
         raise HTTPException(
             status_code=404,
             detail="Story not found"
         )
 
-    prompt = ANALYSIS_PROMPT.format(
-        story=story.original_text
-    )
+    return analysis
 
-    response = (
-        GeminiService.generate(
-            prompt
-        )
+## Analysis Get
+@router.get(
+    "/{story_id}/ai-analysis",
+    response_model=AIAnalysisResponse | None
+)
+def get_ai_analysis(
+    story_id: int,
+    db: Session = Depends(get_db)
+):
+    return AIAnalysisService.get(
+        db,
+        story_id
     )
-
-    cleaned = (
-        response
-        .replace("```json", "")
-        .replace("```", "")
-        .strip()
-    )
-
-    return json.loads(
-        cleaned
-    )
-
 
 #Localize
 @router.get(
@@ -299,3 +291,6 @@ async def upload_story(
         "text_length": len(extracted_text),
         "preview": extracted_text[:500]
     }
+
+
+    

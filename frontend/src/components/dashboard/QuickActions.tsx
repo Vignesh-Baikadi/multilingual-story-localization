@@ -37,7 +37,7 @@ export default function QuickActions() {
                 Quick Actions
             </h2>
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-4">
 
                 {actions.map((action) => (
                     <button
@@ -51,7 +51,7 @@ export default function QuickActions() {
                             border
                             border-white/10
                             bg-white/5
-                            p-6
+                            p-3
                             text-left
                             backdrop-blur-xl
                             transition-all
@@ -67,8 +67,8 @@ export default function QuickActions() {
                             <div
                                 className="
                                     flex
-                                    h-14
-                                    w-14
+                                    h-12
+                                    w-12
                                     items-center
                                     justify-center
                                     rounded-2xl
@@ -95,14 +95,31 @@ export default function QuickActions() {
 
                         </div>
 
-                        <FiArrowRight
+                        <div
                             className="
-                                text-slate-400
-                                transition-transform
-                                group-hover:translate-x-1
+                                flex
+                                h-10
+                                w-10
+                                items-center
+                                justify-center
+                                rounded-full
+                                bg-white/5
+                                transition-all
+                                duration-300
+                                group-hover:bg-indigo-600
                             "
-                            size={22}
-                        />
+                        >
+                            <FiArrowRight
+                                className="
+                                    text-slate-300
+                                    transition-transform
+                                    duration-300
+                                    group-hover:translate-x-1
+                                    group-hover:text-white
+                                "
+                                size={18}
+                            />
+                        </div>
 
                     </button>
                 ))}

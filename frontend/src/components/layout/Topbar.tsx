@@ -2,8 +2,10 @@ import { FiBell, FiSearch, FiUser } from "react-icons/fi";
 
 export default function Topbar() {
     return (
-        <header className="flex h-20 items-center justify-between border-b border-white/10 bg-white/5 px-8 backdrop-blur-xl">
-
+        <header className="sticky top-0 z-30 flex h-20 items-center
+                justify-between border-b border-white/10 bg-[#11151F]/80
+                px-8 backdrop-blur-2xl"
+        >
             <div>
 
                 <h2 className="text-2xl font-bold text-white">

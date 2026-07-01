@@ -42,10 +42,22 @@ export async function getStory(id: number) {
 }
 
 /*
-Returns AI analysis.
+Returns cached AI analysis.
+Returns null if analysis does not exist.
 */
 export async function getAIAnalysis(id: number) {
     const response = await axios.get(
+        `${API_BASE_URL}/stories/${id}/ai-analysis`
+    );
+
+    return response.data;
+}
+
+/*
+Generates AI analysis and stores it.
+*/
+export async function generateAIAnalysis(id: number) {
+    const response = await axios.post(
         `${API_BASE_URL}/stories/${id}/ai-analysis`
     );
 

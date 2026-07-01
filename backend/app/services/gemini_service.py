@@ -1,27 +1,24 @@
-import google.generativeai as genai
+import os
 
-from app.core.config import settings
+from dotenv import load_dotenv
+from google import genai
 
-
-genai.configure(
-    api_key=settings.GEMINI_API_KEY
-)
+load_dotenv()
 
 
 class GeminiService:
 
-    model = genai.GenerativeModel(
-        "gemini-2.5-flash"
+    client = genai.Client(
+        api_key=os.getenv("GEMINI_API_KEY")
     )
 
+    model = "gemini-2.5-flash"
+
     @staticmethod
-    def generate(
-        prompt: str
-    ):
-        response = (
-            GeminiService.model.generate_content(
-                prompt
-            )
+    def generate(prompt: str) -> str:
+        response = GeminiService.client.models.generate_content(
+            model=GeminiService.model,
+            contents=prompt,
         )
 
         return response.text

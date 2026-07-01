@@ -20,29 +20,36 @@ export default function Dashboard() {
             )
         }
         <DashboardHero />
-            <div className="mt-8 grid gap-6 lg:grid-cols-3">
-                
-            <StatsCard
-                title="Stories"
-                value={stats.totalStories}
-                growth="+4 this week"
-                icon={FiBookOpen}
-            />
-            <StatsCard
-                title="AI Analysis"
-                value={stats.totalAnalyses}
-                growth="+8 today"
-                icon={FiCpu}
-            />
-            <StatsCard
-                title="Languages"
-                value={stats.totalLanguages}
-                growth="+3 added"
-                icon={FiGlobe}
-            />
-            <RecentStories />
-            <QuickActions />
-        </div>
+            <>
+                <div className="mt-8 grid gap-6 lg:grid-cols-3">
+                    <StatsCard
+                        title="Stories"
+                        value={stats.totalStories}
+                        growth="+4 this week"
+                        icon={FiBookOpen}
+                    />
+
+                    <StatsCard
+                        title="AI Analysis"
+                        value={stats.totalAnalyses}
+                        growth="+8 today"
+                        icon={FiCpu}
+                    />
+
+                    <StatsCard
+                        title="Languages"
+                        value={stats.totalLanguages}
+                        growth="+3 added"
+                        icon={FiGlobe}
+                    />
+                </div>
+                <div className="mt-8 grid gap-6 lg:grid-cols-3">
+                    <div className="lg:col-span-2">
+                        <RecentStories />
+                    </div>
+                    <QuickActions />
+                </div>
+            </>
 
         </AppLayout>
     );
