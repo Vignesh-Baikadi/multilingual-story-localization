@@ -6,6 +6,7 @@ import StoryHeader from "../components/story/StoryHeader";
 import { useStory } from "../hooks/useStory";
 import StoryContent from "../components/story/StoryContent";
 import AIInsights from "../components/story/AIInsights";
+import LocalizationCard from "../components/story/LocalizationCard";
 
 export default function StoryDetailsPage() {
     const { id } = useParams();
@@ -47,7 +48,10 @@ export default function StoryDetailsPage() {
                 content={story.original_text}
             />
             {/* AI-powered story analysis */}
-            <AIInsights storyId={story.id} />       
+            <AIInsights storyId={story.id} />  
+
+            {/* Localization section */}
+            <LocalizationCard storyId={story.id} />  
 
         </AppLayout>
     );

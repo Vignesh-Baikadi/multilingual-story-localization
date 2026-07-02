@@ -3,6 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.db.init_db import create_tables
 from app.api.v1.endpoints.story import router as story_router
+from app.api.v1.endpoints.system import router as system_router
+
+
 
 app = FastAPI(
     title="Multilingual Story Localization API",
@@ -31,6 +34,10 @@ app.include_router(
     prefix="/api/v1"
 )
 
+app.include_router(
+    system_router,
+    prefix="/api/v1",
+)
 
 @app.get("/")
 def health_check():

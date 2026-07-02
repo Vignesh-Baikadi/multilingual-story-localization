@@ -1,5 +1,10 @@
-import {FiBook,FiHome,FiSettings, FiUploadCloud,FiGlobe,FiCpu,} from "react-icons/fi";
 import { NavLink } from "react-router-dom";
+import {
+    FiBook,
+    FiHome,
+    FiSettings,
+    FiUploadCloud,
+} from "react-icons/fi";
 
 const menu = [
     {
@@ -13,18 +18,8 @@ const menu = [
         path: "/upload",
     },
     {
-        title: "Story Library",
+        title: "Stories",
         icon: FiBook,
-        path: "/library",
-    },
-    {
-        title: "AI Analysis",
-        icon: FiCpu,
-        path: "/library",
-    },
-    {
-        title: "Localization",
-        icon: FiGlobe,
         path: "/library",
     },
     {
@@ -127,53 +122,6 @@ export default function Sidebar() {
                 ))}
 
             </nav>
-            <div className="border-t border-white/10 p-6">
-
-                <div
-                    className="
-                        flex
-                        items-center
-                        gap-4
-                        rounded-2xl
-                        bg-white/5
-                        p-4
-                    "
-                >
-
-                    <div
-                        className="
-                            flex
-                            h-12
-                            w-12
-                            items-center
-                            justify-center
-                            rounded-full
-                            bg-gradient-to-br
-                            from-indigo-500
-                            to-violet-600
-                            font-bold
-                            text-white
-                        "
-                    >
-                        V
-                    </div>
-
-                    <div>
-
-                        <h3 className="text-sm font-semibold text-white">
-                            Vignesh
-                        </h3>
-
-                        <p className="text-xs text-slate-400">
-                            AI Engineer
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
         </aside>
     );
 }

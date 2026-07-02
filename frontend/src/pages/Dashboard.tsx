@@ -4,7 +4,7 @@ import {FiBookOpen, FiCpu,FiGlobe,} from "react-icons/fi";
 import DashboardHero from "../components/dashboard/DashboardHero";
 import RecentStories from "../components/dashboard/RecentStories";
 import QuickActions from "../components/dashboard/QuickActions";
-import { useDashboard } from "../hooks/useDashBoard";
+import { useDashboard } from "../hooks/useDashboard";
 
 
 export default function Dashboard() {

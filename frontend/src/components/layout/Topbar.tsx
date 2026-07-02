@@ -1,4 +1,9 @@
-import { FiBell, FiSearch, FiUser } from "react-icons/fi";
+import {
+    FiMoon,
+    FiSun,
+    FiSettings,
+    FiUser,
+} from "react-icons/fi";
 
 export default function Topbar() {
     return (
@@ -18,25 +23,42 @@ export default function Topbar() {
 
             </div>
 
-            <div className="flex items-center gap-4">
-
-                {/* Search Button */}
-                <button className="rounded-2xl border border-white/10 bg-white/5 p-3 text-slate-300 transition hover:border-indigo-500 hover:text-white">
-                    <FiSearch size={20} />
+           <div className="flex items-center gap-3">
+                {/* Theme Toggle */}
+                <button
+                    className="
+                        rounded-2xl
+                        border
+                        border-white/10
+                        bg-white/5
+                        p-3
+                        text-slate-300
+                        transition
+                        hover:border-indigo-500
+                        hover:text-white
+                    "
+                >
+                    <FiMoon size={20} />
                 </button>
 
-                {/* Notification Button */}
-                <button className="rounded-2xl border border-white/10 bg-white/5 p-3 text-slate-300 transition hover:border-indigo-500 hover:text-white">
-                    <FiBell size={20} />
+                {/* Profile */}
+                <button
+                    className="
+                        flex
+                        h-12
+                        w-12
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-gradient-to-br
+                        from-indigo-500
+                        to-violet-600
+                        text-white
+                    "
+                >
+                    <FiUser size={18} />
                 </button>
-
-                {/* User Avatar */}
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg">
-                    <FiUser size={20} />
-                </div>
-
             </div>
-
         </header>
     );
 }
