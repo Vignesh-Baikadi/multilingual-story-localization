@@ -1,6 +1,8 @@
 import { FiArrowRight, FiUploadCloud } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 export default function DashboardHero() {
+    const navigate = useNavigate();
     return (
         <section
             className="
@@ -51,26 +53,11 @@ export default function DashboardHero() {
                 </div>
 
                 <button
-                    className="
-                        flex
-                        items-center
-                        gap-3
-                        rounded-2xl
-                        bg-indigo-600
-                        px-6
-                        py-4
-                        font-semibold
-                        text-white
-                        transition-all
-                        duration-300
-                        hover:scale-105
-                        hover:bg-indigo-500
-                    "
+                    onClick={() => navigate("/upload")}
+                    className="flex items-center gap-3 rounded-2xl bg-indigo-600 px-6 py-4 font-semibold text-white transition hover:scale-105 hover:bg-indigo-500"
                 >
                     <FiUploadCloud size={20} />
-
                     Upload Story
-
                     <FiArrowRight />
                 </button>
 

@@ -3,6 +3,8 @@ import StatsCard from "../components/dashboard/StatsCard";
 import {FiBookOpen, FiCpu,FiGlobe,} from "react-icons/fi";
 import DashboardHero from "../components/dashboard/DashboardHero";
 import RecentStories from "../components/dashboard/RecentStories";
+import RecentActivity  from "@/components/dashboard/RecentActivity";
+import ContinueWorking from "@/components/dashboard/ContinueWorking";
 import QuickActions from "../components/dashboard/QuickActions";
 import { useDashboard } from "../hooks/useDashboard";
 
@@ -21,6 +23,16 @@ export default function Dashboard() {
         }
         <DashboardHero />
             <>
+                <div className="mt-8 grid gap-6 lg:grid-cols-2">
+                    <ContinueWorking />
+                    <RecentActivity />
+                </div>
+
+                <div className="mt-10 grid gap-8 xl:grid-cols-[1.4fr_1fr]">
+                    <RecentStories />
+                    <QuickActions />
+
+                </div>
                 <div className="mt-8 grid gap-6 lg:grid-cols-3">
                     <StatsCard
                         title="Stories"

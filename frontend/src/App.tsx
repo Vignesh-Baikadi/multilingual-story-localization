@@ -1,18 +1,10 @@
 import { Routes, Route } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
-import StoryLibrary from "./pages/StoryLibraryPage";
+import StoryLibraryPage from "./pages/StoryLibraryPage";
 import StoryUploadPage from "./pages/StoryUploadPage";
 import StoryDetailsPage from "./pages/StoryDetailsPage";
-
-
-function Settings() {
-    return (
-        <div className="flex min-h-screen items-center justify-center bg-[#030712] text-3xl font-bold text-white">
-            Settings
-        </div>
-    );
-}
+import SettingsPage from "./pages/SettingsPage";
 
 function NotFound() {
     return (
@@ -41,12 +33,12 @@ export default function App() {
             />
             <Route
                 path="/library"
-                element={<StoryLibrary />}
+                element={<StoryLibraryPage />}
             />
 
             <Route
                 path="/settings"
-                element={<Settings />}
+                element={<SettingsPage />}
             />
 
             <Route

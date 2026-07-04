@@ -5,16 +5,23 @@ import AppLayout from "../components/layout/AppLayout";
 import StoryLibraryToolbar from "../components/story/StoryLibraryToolbar";
 
 type Story = {
-  id: number;
-  title: string;
-  uploaded_file_name: string;
-  original_text: string;
-  created_at: string;
+    id: number;
+    title: string;
+    uploaded_file_name: string;
+    original_text: string;
+    created_at: string;
+    updated_at: string;
+    has_analysis: boolean;
+    has_localization: boolean;
+    localization_count: number;
 };
 
 const StoryLibraryPage = () => {
-  const [stories, setStories] = useState<Story[]>([]);
+const [stories, setStories] = useState<Story[]>([]);
 const [search, setSearch] = useState("");
+const [sort, setSort] = useState("newest");
+const [aiStatus, setAiStatus] = useState("all");
+const [localizationStatus, setLocalizationStatus] = useState("all");
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -29,35 +36,92 @@ const [search, setSearch] = useState("");
     fetchStories();
   }, []);
 
-const filteredStories = useMemo(() => {
-    return stories.filter((story) =>
+    const filteredStories = useMemo(() => {
+    let result = stories.filter((story) =>
         story.title.toLowerCase().includes(search.toLowerCase())
     );
-}, [stories, search]);
 
-  return (
+    switch (sort) {
+        case "oldest":
+            result.sort(
+                (a, b) =>
+                    new Date(a.created_at).getTime() -
+                    new Date(b.created_at).getTime()
+            );
+            break;
+
+        case "az":
+            result.sort((a, b) =>
+                a.title.localeCompare(b.title)
+            );
+            break;
+
+        case "za":
+            result.sort((a, b) =>
+                b.title.localeCompare(a.title)
+            );
+            break;
+
+        default:
+            result.sort(
+                (a, b) =>
+                    new Date(b.created_at).getTime() -
+                    new Date(a.created_at).getTime()
+            );
+    }
+
+    // AI analysis filter
+    if (aiStatus !== "all") {
+        result = result.filter((story) =>
+            aiStatus === "ready"
+                ? story.has_analysis
+                : !story.has_analysis
+        );
+    }
+
+    // Localization filter
+    if (localizationStatus !== "all") {
+        result = result.filter((story) =>
+            localizationStatus === "localized"
+                ? story.has_localization
+                : !story.has_localization
+        );
+    }
+
+    return result;
+}, [stories, search, sort]);
+
+return (
     <AppLayout>
-      <StoryLibraryToolbar
-          search={search}
-          setSearch={setSearch}
-      />
+        <div className="mx-auto max-w-6xl">
 
-      <div className="mx-auto max-w-5xl">
-        <h1 className="mb-6 text-3xl font-bold">
-          Story Library
-        </h1>
+            <h1 className="mb-8 text-3xl font-bold text-white">
+                Stories
+            </h1>
 
-        <div className="space-y-5">
-            {filteredStories.map((story) => (
-                <StoryCard
-                    key={story.id}
-                    story={story}
-                />
-            ))}
+            <StoryLibraryToolbar
+                search={search}
+                setSearch={setSearch}
+                sort={sort}
+                setSort={setSort}
+                aiStatus={aiStatus}
+                setAiStatus={setAiStatus}
+                localizationStatus={localizationStatus}
+                setLocalizationStatus={setLocalizationStatus}
+            />
+
+            <div className="space-y-4">
+                {filteredStories.map((story) => (
+                    <StoryCard
+                        key={story.id}
+                        story={story}
+                    />
+                ))}
+            </div>
+
         </div>
-      </div>
     </AppLayout>
-  );
+);
 };
 
 export default StoryLibraryPage;

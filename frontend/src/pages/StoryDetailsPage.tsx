@@ -1,21 +1,43 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-
 
 import AppLayout from "../components/layout/AppLayout";
 import StoryHeader from "../components/story/StoryHeader";
 import { useStory } from "../hooks/useStory";
 import StoryContent from "../components/story/StoryContent";
 import AIInsights from "../components/story/AIInsights";
-import LocalizationCard from "../components/story/LocalizationCard";
+import LocalizationCard from "../components/localization/LocalizationCard";
 
 export default function StoryDetailsPage() {
     const { id } = useParams();
 
-    const {
-        story,
-        loading,
-        error,
-    } = useStory(Number(id));
+    const {story,loading,error,} = useStory(Number(id));
+    // Save recently visited story
+    useEffect(() => {
+        if (!story) return;
+
+        const recent = JSON.parse(
+            localStorage.getItem("recentStories") || "[]"
+        );
+
+        // Remove duplicate if already present
+        const filtered = recent.filter(
+            (item: any) => item.id !== story.id
+        );
+
+        filtered.unshift({
+            id: story.id,
+            title: story.title,
+            created_at: story.created_at,
+            visitedAt: new Date().toISOString(),
+        });
+
+        // Keep only last 5 stories
+        localStorage.setItem(
+            "recentStories",
+            JSON.stringify(filtered.slice(0, 5))
+        );
+    }, [story]);
 
 
     if (loading) {

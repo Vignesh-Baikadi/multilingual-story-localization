@@ -5,8 +5,13 @@ export interface Story {
     id: number;
     title: string;
     original_text: string;
-    uploaded_file_name: string | null;
+    uploaded_file_name: string;
     created_at: string;
+    updated_at: string;
+
+    has_analysis: boolean;
+    has_localization: boolean;
+    localization_count: number;
 }
 
 export function useStory(id: number) {

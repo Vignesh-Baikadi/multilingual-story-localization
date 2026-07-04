@@ -175,7 +175,7 @@ def localize_story(
     language: str,
     db: Session = Depends(get_db)
 ):
-    story = StoryService.get_story(
+    story = StoryService.get_story_model(
         db,
         story_id
     )

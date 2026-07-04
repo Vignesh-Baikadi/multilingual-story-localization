@@ -42,9 +42,17 @@ export default function StoryCard({ story }: StoryCardProps) {
                                 {story.title}
                             </h3>
 
-                            <span className="rounded-full bg-emerald-500/20 px-2 py-1 text-xs text-emerald-400">
-                                AI Ready
-                            </span>
+                            {
+                                story.has_analysis ? (
+                                    <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-emerald-400">
+                                        AI Ready
+                                    </span>
+                                ) : (
+                                    <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium text-amber-400">
+                                        AI Pending
+                                    </span>
+                                )
+                            }
                         </div>
 
                         <div className="mt-2 flex flex-wrap items-center gap-5 text-sm text-slate-400">
@@ -68,7 +76,7 @@ export default function StoryCard({ story }: StoryCardProps) {
                 <div className="flex items-center gap-3">
 
                     <span className="rounded-full bg-indigo-500/15 px-3 py-1 text-xs text-indigo-300">
-                        Localizations: 0
+                        Localizations: {story.localization_count}
                     </span>
 
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 transition group-hover:scale-110">
