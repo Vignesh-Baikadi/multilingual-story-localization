@@ -5,6 +5,8 @@ import AppLayout from "../components/layout/AppLayout";
 import StoryPreview from "../components/story/StoryPreview";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import storyService from "../services/storyService";
+import { addHistory } from "../utils/historyStorage";
+
 
 export default function StoryUploadPage() {
     const inputRef = useRef<HTMLInputElement>(null);
@@ -44,7 +46,12 @@ export default function StoryUploadPage() {
             setLoading(true);
 
             const data = await storyService.uploadStory(file);
-
+            addHistory({
+                id: data.id,
+                title: data.filename,
+                type: "upload",
+                action: "Uploaded Story",
+            });
             setTitle(data.filename);
             setPreview(data.preview);
         } catch {

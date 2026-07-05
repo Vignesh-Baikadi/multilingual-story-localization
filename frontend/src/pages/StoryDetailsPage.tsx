@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
+
+import { addHistory } from "../utils/historyStorage";
 import AppLayout from "../components/layout/AppLayout";
 import StoryHeader from "../components/story/StoryHeader";
 import { useStory } from "../hooks/useStory";
@@ -15,7 +17,14 @@ export default function StoryDetailsPage() {
     // Save recently visited story
     useEffect(() => {
         if (!story) return;
-
+        if (story) {
+                addHistory({
+                    id: story.id,
+                    title: story.title,
+                    type: "story",
+                    action: "Opened Story",
+                });
+            }
         const recent = JSON.parse(
             localStorage.getItem("recentStories") || "[]"
         );
@@ -51,6 +60,19 @@ export default function StoryDetailsPage() {
     }
 
     if (error || !story) {
+        // Save the story to recent history
+        useEffect(() => {
+            if (story) {
+                addHistory({
+                    id: story.id,
+                    title: story.title,
+                    type: "story",
+                    action: "Opened Story",
+                });
+            }
+        }, [story]);
+
+
         return (
             <AppLayout>
                 <p className="text-red-400">

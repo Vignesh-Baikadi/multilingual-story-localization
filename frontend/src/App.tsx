@@ -5,6 +5,8 @@ import StoryLibraryPage from "./pages/StoryLibraryPage";
 import StoryUploadPage from "./pages/StoryUploadPage";
 import StoryDetailsPage from "./pages/StoryDetailsPage";
 import SettingsPage from "./pages/SettingsPage";
+import HistoryPage from "./pages/HistoryPage";
+
 
 function NotFound() {
     return (
@@ -40,11 +42,17 @@ export default function App() {
                 path="/settings"
                 element={<SettingsPage />}
             />
-
+            
+            <Route
+                path="/history"
+                element={<HistoryPage />}
+            />
+            
             <Route
                 path="*"
                 element={<NotFound />}
             />
+            
 
         </Routes>
     );

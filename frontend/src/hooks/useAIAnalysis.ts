@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-    getAIAnalysis,
-    generateAIAnalysis,
-} from "../services/storyService";
+import { getAIAnalysis, generateAIAnalysis,} from "../services/storyService";
+import { addHistory } from "../utils/historyStorage";
+
 
 export interface AIAnalysis {
     title: string;
@@ -47,6 +46,12 @@ export function useAIAnalysis(storyId: number) {
 
         try {
             const data = await generateAIAnalysis(storyId);
+            addHistory({
+                id: storyId,
+                title: data.title,
+                type: "analysis",
+                action: "Generated AI Analysis",
+            });
             setAnalysis(data);
         } finally {
             setGenerating(false);

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { localizeStory } from "../services/storyService";
+import { addHistory } from "../utils/historyStorage";
+
 
 export function useLocalization(storyId: number) {
     const [language, setLanguage] = useState("Telugu");
@@ -10,11 +12,13 @@ export function useLocalization(storyId: number) {
         try {
             setLoading(true);
 
-            const data = await localizeStory(
-                storyId,
-                language
-            );
-
+            const data = await localizeStory(storyId,language);
+            addHistory({
+                id: storyId,
+                title: data.title,
+                type: "localization",
+                action: `Localized to ${language}`,
+            });
             setLocalizedText(
                 data.localized_story
             );

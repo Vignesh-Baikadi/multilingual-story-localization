@@ -5,7 +5,6 @@ import DashboardHero from "../components/dashboard/DashboardHero";
 import RecentStories from "../components/dashboard/RecentStories";
 import RecentActivity  from "@/components/dashboard/RecentActivity";
 import ContinueWorking from "@/components/dashboard/ContinueWorking";
-import QuickActions from "../components/dashboard/QuickActions";
 import { useDashboard } from "../hooks/useDashboard";
 
 
@@ -28,11 +27,7 @@ export default function Dashboard() {
                     <RecentActivity />
                 </div>
 
-                <div className="mt-10 grid gap-8 xl:grid-cols-[1.4fr_1fr]">
-                    <RecentStories />
-                    <QuickActions />
-
-                </div>
+                
                 <div className="mt-8 grid gap-6 lg:grid-cols-3">
                     <StatsCard
                         title="Stories"
@@ -55,11 +50,8 @@ export default function Dashboard() {
                         icon={FiGlobe}
                     />
                 </div>
-                <div className="mt-8 grid gap-6 lg:grid-cols-3">
-                    <div className="lg:col-span-2">
-                        <RecentStories />
-                    </div>
-                    <QuickActions />
+                <div className="mt-10 grid gap-8 xl:grid-cols-[1.4fr_1fr]">
+                    <RecentStories />
                 </div>
             </>
 

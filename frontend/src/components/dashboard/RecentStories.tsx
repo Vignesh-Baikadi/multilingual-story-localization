@@ -1,33 +1,23 @@
-import {
-    FiArrowRight,
-    FiBookOpen,
-} from "react-icons/fi";
+import { FiArrowRight, FiBookOpen, FiCpu, FiGlobe, FiUploadCloud } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import { useHistory } from "../../hooks/useHistory";
 
-const stories = [
-    {
-        id: 1,
-        title: "The Lost Kingdom",
-        genre: "Fantasy",
-        language: "English",
-        uploaded: "2 mins ago",
-    },
-    {
-        id: 2,
-        title: "Dragon's Curse",
-        genre: "Adventure",
-        language: "Hindi",
-        uploaded: "Yesterday",
-    },
-    {
-        id: 3,
-        title: "Moon Warrior",
-        genre: "Sci-Fi",
-        language: "Telugu",
-        uploaded: "3 days ago",
-    },
-];
+function getIcon(type: string) {
+    switch (type) {
+        case "analysis":
+            return <FiCpu size={22} />;
+        case "localization":
+            return <FiGlobe size={22} />;
+        case "upload":
+            return <FiUploadCloud size={22} />;
+        default:
+            return <FiBookOpen size={22} />;
+    }
+}
 
 export default function RecentStories() {
+    const { history } = useHistory();
+    const navigate = useNavigate();
     return (
         <section className="mt-10">
 
@@ -37,7 +27,10 @@ export default function RecentStories() {
                     Recent Stories
                 </h2>
 
-                <button className="text-indigo-400 hover:text-indigo-300">
+                <button
+                    onClick={() => navigate("/history")}
+                    className="text-indigo-400 hover:text-indigo-300"
+                >
                     View All
                 </button>
 
@@ -45,8 +38,7 @@ export default function RecentStories() {
 
             <div className="space-y-4">
 
-                {stories.map((story) => (
-
+                {history.slice(0, 5).map((story) => (
                     <div
                         key={story.id}
                         className="
@@ -82,7 +74,7 @@ export default function RecentStories() {
                                     text-white
                                 "
                             >
-                                <FiBookOpen size={24} />
+                                {getIcon(story.type)}
                             </div>
 
                             <div>
@@ -92,11 +84,10 @@ export default function RecentStories() {
                                 </h3>
 
                                 <p className="mt-1 text-sm text-slate-400">
-                                    {story.genre}
-                                    {" • "}
-                                    {story.language}
-                                    {" • "}
-                                    {story.uploaded}
+                                    {story.action}
+                                </p>
+                                <p className="text-xs text-slate-500">
+                                    {new Date(story.timestamp).toLocaleString()}
                                 </p>
 
                             </div>
@@ -104,21 +95,12 @@ export default function RecentStories() {
                         </div>
 
                         <button
-                            className="
-                                flex
-                                items-center
-                                gap-2
-                                rounded-xl
-                                bg-indigo-600
-                                px-5
-                                py-3
-                                text-white
-                                transition
-                                hover:bg-indigo-500
-                            "
+                            onClick={() =>
+                                navigate(`/story/${story.id}`)
+                            }
+                            className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-white transition hover:bg-indigo-500"
                         >
                             View
-
                             <FiArrowRight />
                         </button>
 
