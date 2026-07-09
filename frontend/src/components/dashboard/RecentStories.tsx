@@ -18,6 +18,25 @@ function getIcon(type: string) {
 export default function RecentStories() {
     const { history } = useHistory();
     const navigate = useNavigate();
+
+    if (history.length === 0) {
+        return (
+            <div>
+            <h1 className="text-2xl font-bold text-white">
+                    Recent Stories
+                </h1>
+            <section className="mt-10 rounded-3xl border border-dashed border-white/10 p-10 text-center">
+                <h2 className="text-2xl font-semibold text-white">
+                    No Recent Activity
+                </h2>
+
+                <p className="mt-3 text-slate-400">
+                    Upload or open a story to get started.
+                </p>
+            </section>
+        </div>
+        );
+    }
     return (
         <section className="mt-10">
 
@@ -36,8 +55,9 @@ export default function RecentStories() {
 
             </div>
 
+            
             <div className="space-y-4">
-
+                
                 {history.slice(0, 5).map((story) => (
                     <div
                         key={story.id}
@@ -60,40 +80,21 @@ export default function RecentStories() {
 
                         <div className="flex items-center gap-5">
 
-                            <div
-                                className="
-                                    flex
-                                    h-14
-                                    w-14
-                                    items-center
-                                    justify-center
-                                    rounded-2xl
-                                    bg-gradient-to-br
-                                    from-indigo-500
-                                    to-purple-600
-                                    text-white
-                                "
-                            >
+                            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
                                 {getIcon(story.type)}
                             </div>
-
                             <div>
-
                                 <h3 className="text-lg font-semibold text-white">
                                     {story.title}
                                 </h3>
-
                                 <p className="mt-1 text-sm text-slate-400">
                                     {story.action}
                                 </p>
                                 <p className="text-xs text-slate-500">
                                     {new Date(story.timestamp).toLocaleString()}
                                 </p>
-
                             </div>
-
                         </div>
-
                         <button
                             onClick={() =>
                                 navigate(`/story/${story.id}`)
@@ -103,13 +104,9 @@ export default function RecentStories() {
                             View
                             <FiArrowRight />
                         </button>
-
                     </div>
-
                 ))}
-
             </div>
-
         </section>
     );
 }

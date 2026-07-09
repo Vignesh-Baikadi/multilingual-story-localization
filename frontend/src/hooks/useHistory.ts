@@ -1,19 +1,25 @@
-import { useEffect, useState } from "react";
-import {
-    getHistory,
-    type HistoryItem,
-} from "../utils/historyStorage";
+import { useCallback, useEffect, useState } from "react";
+import { getHistory, type HistoryItem } from "../utils/historyStorage";
 
 export function useHistory() {
-    const [history, setHistory] =
-        useState<HistoryItem[]>([]);
+    const [history, setHistory] = useState<HistoryItem[]>([]);
 
-    useEffect(() => {
+    const refresh = useCallback(() => {
         setHistory(getHistory());
     }, []);
 
+    useEffect(() => {
+        refresh();
+
+        window.addEventListener("storage", refresh);
+
+        return () => {
+            window.removeEventListener("storage", refresh);
+        };
+    }, [refresh]);
+
     return {
         history,
-        refresh: () => setHistory(getHistory()),
+        refresh,
     };
 }
