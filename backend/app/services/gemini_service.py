@@ -12,10 +12,11 @@ class GeminiService:
         api_key=os.getenv("GEMINI_API_KEY")
     )
 
-    model = "gemini-2.5-flash"
+    model = "gemini-2.5-flash-lite"
 
     @staticmethod
     def generate(prompt: str) -> str:
+        print("Using model:", GeminiService.model)
         response = GeminiService.client.models.generate_content(
             model=GeminiService.model,
             contents=prompt,

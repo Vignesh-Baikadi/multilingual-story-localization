@@ -95,7 +95,10 @@ export default function StoryDetailsPage() {
             <AIInsights storyId={story.id} />  
 
             {/* Localization section */}
-            <LocalizationCard storyId={story.id} />  
+            <LocalizationCard 
+                storyId={story.id} 
+                storyTitle={story.title}
+            />  
 
         </AppLayout>
     );

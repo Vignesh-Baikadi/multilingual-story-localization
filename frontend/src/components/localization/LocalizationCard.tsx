@@ -6,10 +6,11 @@ import { useLocalization } from "../../hooks/useLocalization";
 
 interface Props {
     storyId: number;
+    storyTitle: string;
 }
 
 export default function LocalizationCard({
-    storyId,
+    storyId,storyTitle
 }: Props) {
     const {
         language,
@@ -17,7 +18,7 @@ export default function LocalizationCard({
         localizedText,
         loading,
         translate,
-    } = useLocalization(storyId);
+    } = useLocalization(storyId,storyTitle);
 
     return (
         <section className="mt-8 rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
@@ -51,7 +52,11 @@ export default function LocalizationCard({
                         ? "Translating..."
                         : "Translate"}
                 </button>
-
+                {loading && (
+                    <p className="mt-4 text-sm text-indigo-400">
+                        AI is translating your story...
+                    </p>
+                )}
             </div>
 
             <LocalizedStory

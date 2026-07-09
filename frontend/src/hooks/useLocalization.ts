@@ -3,7 +3,10 @@ import { localizeStory } from "../services/storyService";
 import { addHistory } from "../utils/historyStorage";
 
 
-export function useLocalization(storyId: number) {
+export function useLocalization(
+    storyId: number,
+    storyTitle: string
+) {
     const [language, setLanguage] = useState("Telugu");
     const [localizedText, setLocalizedText] = useState("");
     const [loading, setLoading] = useState(false);
@@ -15,7 +18,7 @@ export function useLocalization(storyId: number) {
             const data = await localizeStory(storyId,language);
             addHistory({
                 id: storyId,
-                title: data.title,
+                title: storyTitle,
                 type: "localization",
                 action: `Localized to ${language}`,
             });
